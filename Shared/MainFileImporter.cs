@@ -9,7 +9,6 @@ namespace Shared
     public class MainFileImporter
     {
         private List<string> _emojis = new List<string>();
-        private string _previousEmoji = string.Empty;
 
         public void Import()
         {
@@ -88,15 +87,15 @@ namespace Shared
             }
 
             var emojiTest = emojiAndName.Replace(emoji, string.Empty);
-            var emojiSuccess = emojiTest != emojiAndName;
 
-            _previousEmoji = emoji;
             previousStartingHexValue = startingHexValue;
 
             TextInfo txtInfo = new CultureInfo("en-us", false).TextInfo;
             var name = emojiAndName.Substring(emojiAndName.IndexOf('E') + 1);
             var formattedName = name.Substring(name.IndexOf(' ') + 1).Replace("-", " ").Replace(":", "");
-            var finalName = txtInfo.ToTitleCase(formattedName).Replace(" ", "");
+            var finalName = txtInfo.ToTitleCase(formattedName).Replace(" ", "").Replace(".", "").Replace("’", "")
+                .Replace("“", "").Replace("”","").Replace("!", "").Replace("&","").Replace("(", "").Replace(")", "")
+                .Replace("1St", "First").Replace("2Nd", "Second").Replace("3Rd", "Third").Replace("*","");
 
             // .ToUpperInvariant().Replace(" ", "");
 
@@ -137,7 +136,7 @@ namespace Shared
 
         private string GenerateEmojiClassLine(EmojiAndName emojiAndName)
         {
-            return $"   public string {emojiAndName.Name} = {emojiAndName.Emoji};";
+            return $"   public string {emojiAndName.Name} = \"{emojiAndName.Emoji}\";";
         }
 
         private void BuildEmojiRegex()
